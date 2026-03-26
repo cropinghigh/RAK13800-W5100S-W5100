@@ -24,6 +24,18 @@
 
 uint16_t EthernetServer::server_port[MAX_SOCK_NUM];
 
+void EthernetServer::begin(uint16_t port)
+{
+	_port = port;
+	uint8_t sockindex = Ethernet.socketBegin(SnMR::TCP, _port);
+	if (sockindex < MAX_SOCK_NUM) {
+		if (Ethernet.socketListen(sockindex)) {
+			server_port[sockindex] = _port;
+		} else {
+			Ethernet.socketDisconnect(sockindex);
+		}
+	}
+}
 
 void EthernetServer::begin()
 {
